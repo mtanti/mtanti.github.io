@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>NNSim</title>
+    <script src="NeuralNet.js"></script>
+    <script>
+    function onload() {
+        var x = new NeuralNet(document.getElementById('x'));
+        x.addNode('glasses', 50, 50, true);
+        x.addNode('longhair', 50, 150, true);
+        x.addNode('beard', 50, 250, true);
+        x.addNode('necklace', 50, 350, true);
+        x.addNode('score', 400, 200, false);
+        
+        x.addBias('score', 0.5);
+        
+        x.addEdge('glasses', 'score', 0.5);
+        x.addEdge('longhair', 'score', 0.5);
+        x.addEdge('beard', 'score', 0.5);
+        x.addEdge('necklace', 'score', 0.5);
+        
+        function shade(imgId, inputVals) {
+            var shade = Math.round(255*x.evaluate(inputVals)['score']);
+            document.getElementById(imgId).style.borderColor = "rgb("+shade+","+shade+","+shade+")";
+        }
+        
+        x.listener = function() {
+            shade('img1', { 'glasses':0, 'beard':0, 'longhair':1, 'necklace':0 });
+            shade('img2', { 'glasses':0, 'beard':1, 'longhair':1, 'necklace':0 });
+            shade('img3', { 'glasses':1, 'beard':0, 'longhair':1, 'necklace':0 });
+            shade('img4', { 'glasses':0, 'beard':0, 'longhair':0, 'necklace':0 });
+            shade('img5', { 'glasses':0, 'beard':0, 'longhair':0, 'necklace':1 });
+            shade('img6', { 'glasses':0, 'beard':0, 'longhair':0, 'necklace':0 });
+        }
+        
+        x.draw();
+    }
+    </script>
+    <style>
+        img {
+            border-radius:10px;
+            border:solid 10px black;
+        }
+        body {
+            font-family: Arial;
+        }
+    </style>
+</head>
+<body onload="onload();">
+<h1>Neural network simulator</h1>
+<p>
+    Adjust the weights and bias below (purple handles) to make the women have a light border and the men have a dark border.
+    Weights indicate how important each feature is to produce a lighter border whilst the bias indicates how sensitive the borders should be to the weights.
+    Purple handles mean that they are ignored, red handles mean that they contribute to making the border lighter, and blue handles mean that they contribute to making the border darker.
+</p>
+<table>
+    <tr>
+        <td>
+            <table border="0" style="height:400px;font-family:Arial;font-size:20pt;text-align:center;">
+                <tr><td>Glasses</td></tr>
+                <tr><td>Long hair</td></tr>
+                <tr><td>Beard</td></tr>
+                <tr><td>Necklace</td></tr>
+            </table>
+        </td>
+        <td><canvas id="x" width="500" height="400" style="border:1pt solid black;"></canvas></td>
+        <td>
+            <table border="0">
+                <tr><td><img id="img1" src="faces/1.jpg" /></td><td><img id="img2" src="faces/2.jpg" /></td></tr>
+                <tr><td><img id="img3" src="faces/3.jpg" /></td><td><img id="img4" src="faces/4.jpg" /></td></tr>
+                <tr><td><img id="img5" src="faces/5.jpg" /></td><td><img id="img6" src="faces/6.jpg" /></td></tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
