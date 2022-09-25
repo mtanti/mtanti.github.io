@@ -20,18 +20,28 @@
         x.addEdge('beard', 'score', 0.5);
         x.addEdge('necklace', 'score', 0.5);
         
-        function shade(imgId, inputVals) {
-            var shade = Math.round(255*x.evaluate(inputVals)['score']);
+        var trainingSet = {
+            'img1': {'input': { 'glasses': 0, 'beard': 0, 'longhair': 1, 'necklace': 0 }, 'output': 1},
+            'img2': {'input': { 'glasses': 0, 'beard': 1, 'longhair': 1, 'necklace': 0 }, 'output': 0},
+            'img3': {'input': { 'glasses': 1, 'beard': 0, 'longhair': 1, 'necklace': 0 }, 'output': 1},
+            'img4': {'input': { 'glasses': 0, 'beard': 0, 'longhair': 0, 'necklace': 0 }, 'output': 0},
+            'img5': {'input': { 'glasses': 0, 'beard': 0, 'longhair': 0, 'necklace': 1 }, 'output': 1},
+            'img6': {'input': { 'glasses': 0, 'beard': 0, 'longhair': 0, 'necklace': 0 }, 'output': 0},
+        };
+        
+        function shade(imgId, score) {
+            var shade = Math.round(255*score);
             document.getElementById(imgId).style.borderColor = "rgb("+shade+","+shade+","+shade+")";
         }
         
         x.listener = function() {
-            shade('img1', { 'glasses':0, 'beard':0, 'longhair':1, 'necklace':0 });
-            shade('img2', { 'glasses':0, 'beard':1, 'longhair':1, 'necklace':0 });
-            shade('img3', { 'glasses':1, 'beard':0, 'longhair':1, 'necklace':0 });
-            shade('img4', { 'glasses':0, 'beard':0, 'longhair':0, 'necklace':0 });
-            shade('img5', { 'glasses':0, 'beard':0, 'longhair':0, 'necklace':1 });
-            shade('img6', { 'glasses':0, 'beard':0, 'longhair':0, 'necklace':0 });
+            var error = 0.0;
+            for (var imgId in trainingSet) {
+                var score = x.evaluate(trainingSet[imgId]['input'])['score']
+                shade(imgId, score);
+                error += Math.pow(score - trainingSet[imgId]['output'], 2);
+            }
+            document.getElementById('error').innerText = error.toFixed(5);
         }
         
         x.draw();
@@ -50,7 +60,9 @@
 <body onload="onload();">
 <h1>Neural network simulator</h1>
 <p>
-    Adjust the weights and bias below (purple handles) to make the women have a light border and the men have a dark border.
+    Adjust the weights and bias below (purple handles) to make the women have a light border and the men have a dark border. The error value should be minimised.
+</p>
+<p>
     Weights indicate how important each feature is to produce a lighter border whilst the bias indicates how sensitive the borders should be to the weights.
     Purple handles mean that they are ignored, red handles mean that they contribute to making the border lighter, and blue handles mean that they contribute to making the border darker.
 </p>
@@ -72,6 +84,11 @@
                 <tr><td><img id="img5" src="faces/5.jpg" /></td><td><img id="img6" src="faces/6.jpg" /></td></tr>
             </table>
         </td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>Error: <span id="error"><span></td>
     </tr>
 </table>
 </body>
