@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Text Tools v0.1.0</title>
+    <title>Text Tools v0.2.0</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -36,6 +36,26 @@
             document.head.appendChild($script);
         }
         
+        function removeStopWords() {
+            if (!$loaded) {
+                return;
+            }
+            
+            const $tokens = document.getElementById('stop_words_text').value.toLowerCase().split(/[^a-z]+/)
+            let $output = '';
+            for (let $i = 0; $i < $tokens.length; $i++) {
+                const $token = $tokens[$i];
+                if ($token != '' && !($token in $stopWords)) {
+                    if ($output != '') {
+                        $output += ' ';
+                    }
+                    $output += $token;
+                }
+            }
+            
+            document.getElementById('stop_words_result').value = $output;
+        }
+        
         function tokenFreqs() {
             if (!$loaded) {
                 return;
@@ -45,7 +65,7 @@
             let $freqs = {};
             for (let $i = 0; $i < $tokens.length; $i++) {
                 const $token = $tokens[$i];
-                if ($token != '' && !($token in $stopWords)) {
+                if ($token != '') {
                     if (!($token in $freqs)) {
                         $freqs[$token] = 0;
                     }
@@ -91,17 +111,28 @@
 </head>
 <body onload="onload();">
 
-<h1>Text Tools v0.1.0</h1>
+<h1>Text Tools v0.2.0</h1>
 
 <div id="loading" style="font-size:20pt;">Loading...</div>
 
-<h2>Word frequencies without stop words</h2>
+<h2>Remove stop words</h2>
+<form>
+    <textarea id="stop_words_text" style="width:50%; height:100px;"></textarea><br />
+    <input type="button" value="Remove stop words" onclick="removeStopWords();" /><br /><br />
+    <textarea id="stop_words_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
+</form>
+<p>Stop word list taken from <a href="https://github.com/igorbrigadir/stopwords">Igor Brigadir's GitHub</a>.</p>
+
+<hr />
+
+<h2>Word frequencies</h2>
 <form>
     <textarea id="token_freqs_text" style="width:50%; height:100px;"></textarea><br />
     <input type="button" value="Get word frequencies" onclick="tokenFreqs();" /><br /><br />
     <textarea id="token_freqs_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
 </form>
-<p>Stop word list taken from <a href="https://github.com/igorbrigadir/stopwords">Igor Brigadir's GitHub</a>.</p>
+
+<hr />
 
 <h2>Related words</h2>
 <form>
