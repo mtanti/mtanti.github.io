@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Text Tools v0.2.0</title>
+    <title>Text Tools v0.3.0</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -47,7 +47,7 @@
                 const $token = $tokens[$i];
                 if ($token != '' && !($token in $stopWords)) {
                     if ($output != '') {
-                        $output += ' ';
+                        $output += '\n';
                     }
                     $output += $token;
                 }
@@ -111,7 +111,7 @@
 </head>
 <body onload="onload();">
 
-<h1>Text Tools v0.2.0</h1>
+<h1>Text Tools v0.3.0</h1>
 
 <div id="loading" style="font-size:20pt;">Loading...</div>
 
@@ -136,7 +136,7 @@
 
 <h2>Related words</h2>
 <form>
-    <input type="text" id="related_tokens_token"></textarea><br />
+    Lemma: <input type="text" id="related_tokens_token" /><br />
     <input type="button" value="Get related words" onclick="relatedTokens();" /><br /><br />
     <textarea id="related_tokens_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
 </form>
