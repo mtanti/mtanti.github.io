@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Text Tools v0.3.0</title>
+    <title>Text Tools v0.4.0</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -97,21 +97,42 @@
                 return;
             }
             
-            const $token = document.getElementById('related_tokens_token').value;
+            const $tokens = document.getElementById('related_tokens_text').value.toLowerCase().split(/[^a-z]+/);
             let $output = '';
-            const $index = $lemmas.indexOf($token);
-            if ($index != -1) {
-                for (let $i = 0; $i < $relations[$index].length; $i++) {
-                    $output += $lemmas[$relations[$index][$i]] + '\n';
+            for (let $i = 0; $i < $tokens.length; $i++) {
+                const $token = $tokens[$i];
+                if ($token != '') {
+                    $output += $token + '\n';
+                    const $index = $lemmas.indexOf($token);
+                    if ($index != -1 && $index in $relations) {
+                        for (let $j = 0; $j < $relations[$index].length; $j++) {
+                            $output += $lemmas[$relations[$index][$j]] + '\n';
+                        }
+                    }
                 }
             }
             document.getElementById('related_tokens_result').value = $output;
+        }
+        
+        function intersection() {
+            const $tokens1 = document.getElementById('intersection_text1').value.toLowerCase().split(/[^a-z]+/);
+            const $tokens2 = document.getElementById('intersection_text2').value.toLowerCase().split(/[^a-z]+/);
+            let $output = '';
+            for (let $i = 0; $i < $tokens1.length; $i++) {
+                const $token1 = $tokens1[$i];
+                if ($token1 != '' && $tokens1.indexOf($token1) == $i) {
+                    if ($tokens2.indexOf($token1) != -1) {
+                        $output += $token1 + '\n';
+                    }
+                }
+            }
+            document.getElementById('intersection_result').value = $output;
         }
     </script>
 </head>
 <body onload="onload();">
 
-<h1>Text Tools v0.3.0</h1>
+<h1>Text Tools v0.4.0</h1>
 
 <div id="loading" style="font-size:20pt;">Loading...</div>
 
@@ -136,11 +157,24 @@
 
 <h2>Related words</h2>
 <form>
-    Lemma: <input type="text" id="related_tokens_token" /><br />
+    Lemmas:<br />
+    <textarea id="related_tokens_text" style="width:50%; height:100px;"></textarea><br />
     <input type="button" value="Get related words" onclick="relatedTokens();" /><br /><br />
     <textarea id="related_tokens_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
 </form>
 <p>Words taken from <a href="https://wordnet.princeton.edu">WordNet</a>.</p>
+
+<hr />
+
+<h2>Word intersection</h2>
+<form>
+    Words 1:<br />
+    <textarea id="intersection_text1" style="width:50%; height:100px;"></textarea><br />
+    Words 2:<br />
+    <textarea id="intersection_text2" style="width:50%; height:100px;"></textarea><br />
+    <input type="button" value="Get intersection" onclick="intersection();" /><br /><br />
+    <textarea id="intersection_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
+</form>
 
 </body>
 </html>
