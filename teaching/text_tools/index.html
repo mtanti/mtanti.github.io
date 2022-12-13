@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Text Tools v0.4.0</title>
+    <title>Text Tools v0.5.0</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -128,11 +128,27 @@
             }
             document.getElementById('intersection_result').value = $output;
         }
+        
+        function common() {
+            const $tokens1 = document.getElementById('common_text1').value.toLowerCase().split(/[^a-z]+/);
+            const $tokens2 = document.getElementById('common_text2').value.toLowerCase().split(/[^a-z]+/);
+            let $output = '';
+            for (let $l = Math.min($tokens1.length, $tokens2.length); $l >= 1; $l--) {
+                for (let $i = 0; $i < $tokens1.length - $l; $i++) {
+                    for (let $j = 0; $j < $tokens2.length - $l; $j++) {
+                        if (JSON.stringify($tokens1.slice($i, $i + $l)) == JSON.stringify($tokens2.slice($j, $j + $l))) {
+                            $output += $tokens1.slice($i, $i + $l).join(' ') + '\n';
+                        }
+                    }
+                }
+            }
+            document.getElementById('common_result').value = $output;
+        }
     </script>
 </head>
 <body onload="onload();">
 
-<h1>Text Tools v0.4.0</h1>
+<h1>Text Tools v0.5.0</h1>
 
 <div id="loading" style="font-size:20pt;">Loading...</div>
 
@@ -174,6 +190,18 @@
     <textarea id="intersection_text2" style="width:50%; height:100px;"></textarea><br />
     <input type="button" value="Get intersection" onclick="intersection();" /><br /><br />
     <textarea id="intersection_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
+</form>
+
+<hr />
+
+<h2>Common sequences</h2>
+<form>
+    Words 1:<br />
+    <textarea id="common_text1" style="width:50%; height:100px;"></textarea><br />
+    Words 2:<br />
+    <textarea id="common_text2" style="width:50%; height:100px;"></textarea><br />
+    <input type="button" value="Get common sequences" onclick="common();" /><br /><br />
+    <textarea id="common_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
 </form>
 
 </body>
