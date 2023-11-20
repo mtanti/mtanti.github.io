@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Text Tools v0.5.0</title>
+    <title>Text Tools v0.6.0</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -129,7 +129,22 @@
             document.getElementById('intersection_result').value = $output;
         }
         
-        function common() {
+        function difference() {
+            const $tokens1 = document.getElementById('difference_text1').value.toLowerCase().split(/[^a-z]+/);
+            const $tokens2 = document.getElementById('difference_text2').value.toLowerCase().split(/[^a-z]+/);
+            let $output = '';
+            for (let $i = 0; $i < $tokens1.length; $i++) {
+                const $token1 = $tokens1[$i];
+                if ($token1 != '' && $tokens1.indexOf($token1) == $i) {
+                    if ($tokens2.indexOf($token1) == -1) {
+                        $output += $token1 + '\n';
+                    }
+                }
+            }
+            document.getElementById('difference_result').value = $output;
+        }
+        
+        function commonSeqs() {
             const $tokens1 = document.getElementById('common_text1').value.toLowerCase().split(/[^a-z]+/);
             const $tokens2 = document.getElementById('common_text2').value.toLowerCase().split(/[^a-z]+/);
             let $output = '';
@@ -148,7 +163,7 @@
 </head>
 <body onload="onload();">
 
-<h1>Text Tools v0.5.0</h1>
+<h1>Text Tools v0.6.0</h1>
 
 <div id="loading" style="font-size:20pt;">Loading...</div>
 
@@ -194,13 +209,25 @@
 
 <hr />
 
+<h2>Word difference (words in words 1 but not in words 2)</h2>
+<form>
+    Words 1:<br />
+    <textarea id="difference_text1" style="width:50%; height:100px;"></textarea><br />
+    Words 2:<br />
+    <textarea id="difference_text2" style="width:50%; height:100px;"></textarea><br />
+    <input type="button" value="Get difference" onclick="difference();" /><br /><br />
+    <textarea id="difference_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
+</form>
+
+<hr />
+
 <h2>Common sequences</h2>
 <form>
     Words 1:<br />
     <textarea id="common_text1" style="width:50%; height:100px;"></textarea><br />
     Words 2:<br />
     <textarea id="common_text2" style="width:50%; height:100px;"></textarea><br />
-    <input type="button" value="Get common sequences" onclick="common();" /><br /><br />
+    <input type="button" value="Get common sequences" onclick="commonSeqs();" /><br /><br />
     <textarea id="common_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
 </form>
 
