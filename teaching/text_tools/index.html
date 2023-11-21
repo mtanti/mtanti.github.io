@@ -92,28 +92,6 @@
             document.getElementById('token_freqs_result').value = $output;
         }
         
-        function relatedTokens() {
-            if (!$loaded) {
-                return;
-            }
-            
-            const $tokens = document.getElementById('related_tokens_text').value.toLowerCase().split(/[^a-z]+/);
-            let $output = '';
-            for (let $i = 0; $i < $tokens.length; $i++) {
-                const $token = $tokens[$i];
-                if ($token != '') {
-                    $output += $token + '\n';
-                    const $index = $lemmas.indexOf($token);
-                    if ($index != -1 && $index in $relations) {
-                        for (let $j = 0; $j < $relations[$index].length; $j++) {
-                            $output += $lemmas[$relations[$index][$j]] + '\n';
-                        }
-                    }
-                }
-            }
-            document.getElementById('related_tokens_result').value = $output;
-        }
-        
         function intersection() {
             const $tokens1 = document.getElementById('intersection_text1').value.toLowerCase().split(/[^a-z]+/);
             const $tokens2 = document.getElementById('intersection_text2').value.toLowerCase().split(/[^a-z]+/);
@@ -159,6 +137,28 @@
             }
             document.getElementById('common_result').value = $output;
         }
+        
+        function relatedTokens() {
+            if (!$loaded) {
+                return;
+            }
+            
+            const $tokens = document.getElementById('related_tokens_text').value.toLowerCase().split(/[^a-z]+/);
+            let $output = '';
+            for (let $i = 0; $i < $tokens.length; $i++) {
+                const $token = $tokens[$i];
+                if ($token != '') {
+                    $output += $token + '\n';
+                    const $index = $lemmas.indexOf($token);
+                    if ($index != -1 && $index in $relations) {
+                        for (let $j = 0; $j < $relations[$index].length; $j++) {
+                            $output += $lemmas[$relations[$index][$j]] + '\n';
+                        }
+                    }
+                }
+            }
+            document.getElementById('related_tokens_result').value = $output;
+        }
     </script>
 </head>
 <body onload="onload();">
@@ -183,17 +183,6 @@
     <input type="button" value="Get word frequencies" onclick="tokenFreqs();" /><br /><br />
     <textarea id="token_freqs_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
 </form>
-
-<hr />
-
-<h2>Related words</h2>
-<form>
-    Lemmas:<br />
-    <textarea id="related_tokens_text" style="width:50%; height:100px;"></textarea><br />
-    <input type="button" value="Get related words" onclick="relatedTokens();" /><br /><br />
-    <textarea id="related_tokens_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
-</form>
-<p>Words taken from <a href="https://wordnet.princeton.edu">WordNet</a>.</p>
 
 <hr />
 
@@ -230,6 +219,17 @@
     <input type="button" value="Get common sequences" onclick="commonSeqs();" /><br /><br />
     <textarea id="common_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
 </form>
+
+<hr />
+
+<h2>Related words</h2>
+<form>
+    Lemmas:<br />
+    <textarea id="related_tokens_text" style="width:50%; height:100px;"></textarea><br />
+    <input type="button" value="Get related words" onclick="relatedTokens();" /><br /><br />
+    <textarea id="related_tokens_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
+</form>
+<p>Words taken from <a href="https://wordnet.princeton.edu">WordNet</a>.</p>
 
 </body>
 </html>
