@@ -120,7 +120,7 @@
             let $output = '';
             for (let $i = 0; $i < $tokens1.length; $i++) {
                 const $token1 = $tokens1[$i];
-                if ($token1 != '' && $tokens1.indexOf($token1) == $i) {
+                if ($token1 != '') {
                     if ($tokens2.indexOf($token1) != -1) {
                         $output += $token1 + '\n';
                     }
@@ -135,7 +135,7 @@
             let $output = '';
             for (let $i = 0; $i < $tokens1.length; $i++) {
                 const $token1 = $tokens1[$i];
-                if ($token1 != '' && $tokens1.indexOf($token1) == $i) {
+                if ($token1 != '') {
                     if ($tokens2.indexOf($token1) == -1) {
                         $output += $token1 + '\n';
                     }
@@ -197,7 +197,7 @@
 
 <hr />
 
-<h2>Word intersection</h2>
+<h2>Word intersection (words in words 1 that are also in words 2)</h2>
 <form>
     Words 1:<br />
     <textarea id="intersection_text1" style="width:50%; height:100px;"></textarea><br />
@@ -209,7 +209,7 @@
 
 <hr />
 
-<h2>Word difference (words in words 1 but not in words 2)</h2>
+<h2>Word difference (words in words 1 that are not in words 2)</h2>
 <form>
     Words 1:<br />
     <textarea id="difference_text1" style="width:50%; height:100px;"></textarea><br />
