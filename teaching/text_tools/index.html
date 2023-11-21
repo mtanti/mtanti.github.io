@@ -43,6 +43,7 @@
             
             const $tokens = document.getElementById('stop_words_text').value.toLowerCase().split(/[^a-z]+/)
             let $output = '';
+            let $count = 0;
             for (let $i = 0; $i < $tokens.length; $i++) {
                 const $token = $tokens[$i];
                 if ($token != '' && !($token in $stopWords)) {
@@ -50,10 +51,12 @@
                         $output += '\n';
                     }
                     $output += $token;
+                    $count += 1;
                 }
             }
             
             document.getElementById('stop_words_result').value = $output;
+            document.getElementById('stop_words_count').value = $count;
         }
         
         function tokenFreqs() {
@@ -86,56 +89,68 @@
             });
             
             let $output = '';
+            let $count = 0;
             for (let $i = 0; $i < $sortList.length; $i++) {
                 $output += $sortList[$i][0] + '\t' + $sortList[$i][1] + '\n';
+                $count += 1;
             }
             document.getElementById('token_freqs_result').value = $output;
+            document.getElementById('token_freqs_count').value = $count;
         }
         
         function intersection() {
             const $tokens1 = document.getElementById('intersection_text1').value.toLowerCase().split(/[^a-z]+/);
             const $tokens2 = document.getElementById('intersection_text2').value.toLowerCase().split(/[^a-z]+/);
             let $output = '';
+            let $count = 0;
             for (let $i = 0; $i < $tokens1.length; $i++) {
                 const $token1 = $tokens1[$i];
                 if ($token1 != '') {
                     if ($tokens2.indexOf($token1) != -1) {
                         $output += $token1 + '\n';
+                        $count += 1;
                     }
                 }
             }
             document.getElementById('intersection_result').value = $output;
+            document.getElementById('intersection_count').value = $count;
         }
         
         function difference() {
             const $tokens1 = document.getElementById('difference_text1').value.toLowerCase().split(/[^a-z]+/);
             const $tokens2 = document.getElementById('difference_text2').value.toLowerCase().split(/[^a-z]+/);
             let $output = '';
+            let $count = 0;
             for (let $i = 0; $i < $tokens1.length; $i++) {
                 const $token1 = $tokens1[$i];
                 if ($token1 != '') {
                     if ($tokens2.indexOf($token1) == -1) {
                         $output += $token1 + '\n';
+                        $count += 1;
                     }
                 }
             }
             document.getElementById('difference_result').value = $output;
+            document.getElementById('difference_count').value = $count;
         }
         
         function commonSeqs() {
-            const $tokens1 = document.getElementById('common_text1').value.toLowerCase().split(/[^a-z]+/);
-            const $tokens2 = document.getElementById('common_text2').value.toLowerCase().split(/[^a-z]+/);
+            const $tokens1 = document.getElementById('common_seqs_text1').value.toLowerCase().split(/[^a-z]+/);
+            const $tokens2 = document.getElementById('common_seqs_text2').value.toLowerCase().split(/[^a-z]+/);
             let $output = '';
+            let $count = 0;
             for (let $l = Math.min($tokens1.length, $tokens2.length); $l >= 1; $l--) {
                 for (let $i = 0; $i < $tokens1.length - $l; $i++) {
                     for (let $j = 0; $j < $tokens2.length - $l; $j++) {
                         if (JSON.stringify($tokens1.slice($i, $i + $l)) == JSON.stringify($tokens2.slice($j, $j + $l))) {
                             $output += $tokens1.slice($i, $i + $l).join(' ') + '\n';
+                            $count += 1;
                         }
                     }
                 }
             }
-            document.getElementById('common_result').value = $output;
+            document.getElementById('common_seqs_result').value = $output;
+            document.getElementById('common_seqs_count').value = $count;
         }
         
         function relatedTokens() {
@@ -145,6 +160,7 @@
             
             const $tokens = document.getElementById('related_tokens_text').value.toLowerCase().split(/[^a-z]+/);
             let $output = '';
+            let $count = 0;
             for (let $i = 0; $i < $tokens.length; $i++) {
                 const $token = $tokens[$i];
                 if ($token != '') {
@@ -153,11 +169,13 @@
                     if ($index != -1 && $index in $relations) {
                         for (let $j = 0; $j < $relations[$index].length; $j++) {
                             $output += $lemmas[$relations[$index][$j]] + '\n';
+                            $count += 1;
                         }
                     }
                 }
             }
             document.getElementById('related_tokens_result').value = $output;
+            document.getElementById('related_tokens_count').value = $count;
         }
     </script>
 </head>
@@ -171,7 +189,8 @@
 <form>
     <textarea id="stop_words_text" style="width:50%; height:100px;"></textarea><br />
     <input type="button" value="Remove stop words" onclick="removeStopWords();" /><br /><br />
-    <textarea id="stop_words_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
+    <textarea id="stop_words_result" readonly="readonly" style="width:50%; height:100px;"></textarea><br />
+    Count: <input id="stop_words_count" type="text" readonly="readonly" size="5" />
 </form>
 <p>Stop word list taken from <a href="https://github.com/igorbrigadir/stopwords">Igor Brigadir's GitHub</a>.</p>
 
@@ -181,7 +200,8 @@
 <form>
     <textarea id="token_freqs_text" style="width:50%; height:100px;"></textarea><br />
     <input type="button" value="Get word frequencies" onclick="tokenFreqs();" /><br /><br />
-    <textarea id="token_freqs_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
+    <textarea id="token_freqs_result" readonly="readonly" style="width:50%; height:100px;"></textarea><br />
+    Count: <input id="token_freqs_count" type="text" readonly="readonly" size="5" />
 </form>
 
 <hr />
@@ -193,7 +213,8 @@
     Words 2:<br />
     <textarea id="intersection_text2" style="width:50%; height:100px;"></textarea><br />
     <input type="button" value="Get intersection" onclick="intersection();" /><br /><br />
-    <textarea id="intersection_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
+    <textarea id="intersection_result" readonly="readonly" style="width:50%; height:100px;"></textarea><br />
+    Count: <input id="intersection_count" type="text" readonly="readonly" size="5" />
 </form>
 
 <hr />
@@ -205,7 +226,8 @@
     Words 2:<br />
     <textarea id="difference_text2" style="width:50%; height:100px;"></textarea><br />
     <input type="button" value="Get difference" onclick="difference();" /><br /><br />
-    <textarea id="difference_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
+    <textarea id="difference_result" readonly="readonly" style="width:50%; height:100px;"></textarea><br />
+    Count: <input id="difference_count" type="text" readonly="readonly" size="5" />
 </form>
 
 <hr />
@@ -213,11 +235,12 @@
 <h2>Common sequences</h2>
 <form>
     Words 1:<br />
-    <textarea id="common_text1" style="width:50%; height:100px;"></textarea><br />
+    <textarea id="common_seqs_text1" style="width:50%; height:100px;"></textarea><br />
     Words 2:<br />
-    <textarea id="common_text2" style="width:50%; height:100px;"></textarea><br />
+    <textarea id="common_seqs_text2" style="width:50%; height:100px;"></textarea><br />
     <input type="button" value="Get common sequences" onclick="commonSeqs();" /><br /><br />
-    <textarea id="common_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
+    <textarea id="common_seqs_result" readonly="readonly" style="width:50%; height:100px;"></textarea><br />
+    Count: <input id="common_seqs_count" type="text" readonly="readonly" size="5" />
 </form>
 
 <hr />
@@ -227,7 +250,8 @@
     Lemmas:<br />
     <textarea id="related_tokens_text" style="width:50%; height:100px;"></textarea><br />
     <input type="button" value="Get related words" onclick="relatedTokens();" /><br /><br />
-    <textarea id="related_tokens_result" readonly="readonly" style="width:50%; height:100px;"></textarea>
+    <textarea id="related_tokens_result" readonly="readonly" style="width:50%; height:100px;"></textarea><br />
+    Count: <input id="related_tokens_count" type="text" readonly="readonly" size="5" />
 </form>
 <p>Words taken from <a href="https://wordnet.princeton.edu">WordNet</a>.</p>
 
