@@ -36,6 +36,35 @@
             document.head.appendChild($script);
         }
         
+        function clearAll() {
+            document.getElementById('stop_words_text').value = '';
+            document.getElementById('stop_words_result').value = '';
+            document.getElementById('stop_words_count').value = '';
+            
+            document.getElementById('token_freqs_text').value = '';
+            document.getElementById('token_freqs_result').value = '';
+            document.getElementById('token_freqs_count').value = '';
+            
+            document.getElementById('intersection_text1').value = '';
+            document.getElementById('intersection_text2').value = '';
+            document.getElementById('intersection_result').value = '';
+            document.getElementById('intersection_count').value = '';
+            
+            document.getElementById('difference_text1').value = '';
+            document.getElementById('difference_text2').value = '';
+            document.getElementById('difference_result').value = '';
+            document.getElementById('difference_count').value = '';
+            
+            document.getElementById('common_seqs_text1').value = '';
+            document.getElementById('common_seqs_text2').value = '';
+            document.getElementById('common_seqs_result').value = '';
+            document.getElementById('common_seqs_count').value = '';
+            
+            document.getElementById('related_tokens_text').value = '';
+            document.getElementById('related_tokens_result').value = '';
+            document.getElementById('related_tokens_count').value = '';
+        }
+        
         function removeStopWords() {
             if (!$loaded) {
                 return;
@@ -184,6 +213,7 @@
 <h1>Text Tools v0.6.0</h1>
 
 <div id="loading" style="font-size:20pt;">Loading...</div>
+<input type="button" value="Clear all" onclick="clearAll();" />
 
 <h2>Remove stop words</h2>
 <form>
