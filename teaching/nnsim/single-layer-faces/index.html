@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Neural network simulator</title>
+    <script src="../res/scripts/library.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="../res/styles/style.css" />
+</head>
+<body onload="onloadFunction();">
+
+    <h1>Neural network simulator</h1>
+    <p>All images were taken from the <a href="https://vis-www.cs.umass.edu/lfw/">Labelled Faces in the Wild</a> data set.</p>
+
+    <hr />
+
+    <table id="faces_instance">
+        <tr>
+            <td colspan="3">
+                <h2 style="text-align: center;">The neural network</h2>
+                <p style="text-align: justify;">
+                    A neural network is a kind of program that converts an input into an output.
+                    It consists of a bunch of adjustable knobs called parameters which change how a set of inputs are converted into an output.
+                    There are two types of parameters: weights and biases.
+                    Weights indicate how important each feature is to produce a bigger output whilst the bias adjusts the base output regardless of the input.
+                    Zero weights are ignored, positive weights contribute to making the output bigger, and negatives weights contribute to making the output smaller.
+                </p>
+                <p style="text-align: justify;">
+                    Adjust the weights (slanted sliders) and bias (verticle slider) below to make the neural network output the largest number you can (brightness of the border) for the features of the woman below.
+                    The input values are shown in parentheses next to their names.
+                    An input value of zero, just like a weight of zero, does not contribute anything to the output.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 160px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">Glasses (1)</td></tr>
+                    <tr><td style="text-align: right;">Long hair (1)</td></tr>
+                    <tr><td style="text-align: right;">Beard (0)</td></tr>
+                    <tr><td style="text-align: right;">Necklace (0)</td></tr>
+                </table>
+            </td>
+            <td style="width: 400px;">
+                <div id="faces_instance_canvas" class="canvas"></div>
+            </td>
+            <td style="width: 145px;">
+                <img id="faces_instance_img" src="../res/images/faces/3.jpg" />
+                <div style="text-align: center; font-size: 20px;">Output: <span id="faces_instance_output"><span></td>
+            </td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <table id="faces_human">
+        <tr>
+            <td colspan="3">
+                <h2 style="text-align: center;">Optimisation: Human friendly version</h2>
+                <p style="text-align: justify;">
+                    Neural networks are not typically meant to work on just one input but on an entire training set of inputs.
+                    The process of finding the right parameters to make a neural network give the right output for as many inputs in the training set as possible is called optimisation or training.
+                </p>
+                <p style="text-align: justify;">
+                    Adjust the weights and bias below to make all the women have a light border and all the men have a dark border.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 140px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">Glasses</td></tr>
+                    <tr><td style="text-align: right;">Long hair</td></tr>
+                    <tr><td style="text-align: right;">Beard</td></tr>
+                    <tr><td style="text-align: right;">Necklace</td></tr>
+                </table>
+            </td>
+            <td style="width: 400px;">
+                <div id="faces_human_canvas" class="canvas"></div>
+            </td>
+            <td style="width: 300px;">
+                <table class="faces">
+                    <tr>
+                        <td style="text-align: center;">make light</td>
+                        <td style="text-align: center;">make dark</td>
+                    </tr>
+                    <tr>
+                        <td><img id="faces_human_img1" src="../res/images/faces/1.jpg" /></td>
+                        <td><img id="faces_human_img2" src="../res/images/faces/2.jpg" /></td>
+                    </tr>
+                    <tr>
+                        <td><img id="faces_human_img3" src="../res/images/faces/3.jpg" /></td>
+                        <td><img id="faces_human_img4" src="../res/images/faces/4.jpg" /></td>
+                    </tr>
+                    <tr>
+                        <td><img id="faces_human_img5" src="../res/images/faces/5.jpg" /></td>
+                        <td><img id="faces_human_img6" src="../res/images/faces/6.jpg" /></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <table id="faces_computer">
+        <tr>
+            <td colspan="3" style="text-align: center;">
+                <h2>Optimisation: Computer friendly version</h2>
+                <p style="text-align: justify;">
+                    This is the same thing as above except that this is closer to how a computer would do it.
+                    The parameters can only be changed by a small amount at a time and you are only guided by the error value.
+                    The error value should be minimised (brought close to zero).
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="text-align: center; font-size: 20px;">Error: <span id="faces_computer_error"><span></td>
+        </tr>
+        <tr>
+            <td style="width: 140px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">Input 1</td></tr>
+                    <tr><td style="text-align: right;">Input 2</td></tr>
+                    <tr><td style="text-align: right;">Input 3</td></tr>
+                    <tr><td style="text-align: right;">Input 4</td></tr>
+                </table>
+            </td>
+            <td style="width: 400px;">
+                <div id="faces_computer_canvas" class="canvas"></div>
+            </td>
+            <td style="width: 300px;">
+                <table class="faces">
+                    <tr>
+                        <td><img id="faces_computer_img1" src="../res/images/faces/mysterious.jpg" /></td>
+                        <td><img id="faces_computer_img2" src="../res/images/faces/mysterious.jpg" /></td>
+                    </tr>
+                    <tr>
+                        <td><img id="faces_computer_img3" src="../res/images/faces/mysterious.jpg" /></td>
+                        <td><img id="faces_computer_img4" src="../res/images/faces/mysterious.jpg" /></td>
+                    </tr>
+                    <tr>
+                        <td><img id="faces_computer_img5" src="../res/images/faces/mysterious.jpg" /></td>
+                        <td><img id="faces_computer_img6" src="../res/images/faces/mysterious.jpg" /></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
