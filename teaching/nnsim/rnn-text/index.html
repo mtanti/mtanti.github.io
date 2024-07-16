@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Recurrent neural network simulator</title>
+    <script src="../res/scripts/library.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="../res/styles/style.css" />
+</head>
+<body onload="onloadFunction();">
+
+    <h1>Recurrent neural network simulator</h1>
+
+    <hr />
+
+    <table id="text_instance">
+        <tr>
+            <td colspan="3">
+                <h2 style="text-align: center;">The neural network</h2>
+                <p style="text-align: justify;">
+                    A recurrent neural network is a neural network that can handle variable length sequence inputs, such as sentences.
+                    The words of the sentences need to be represented as a set of numbers somehow, and the simplest way to do that is to use one-hot vectors, that is, a list of zeros with a single 1 somewhere in the list.
+                    The position of the 1 tells you which word is used.
+                    In this demonstration, we're assuming that a sentence can only consist of two possible words: 'the' and 'dog', for example 'dog the dog'.
+                    We're using '0 1' to represent 'the' and '1 0' to represent 'dog'.
+                </p>
+                <p style="text-align: justify;">
+                    A recurrent neural network takes these word numbers, called word embeddings, and scans them from the first word to the last, each time keeping a memory of what words have been observed up to that point.
+                    This memory is a fixed set of numbers called a state, and the amount of numbers in the state does not change, no matter how long the sentence is.
+                    As the words are scanned one by one, a neural network layer combines the current word's numbers with the previous state numbers in order to create a new state.
+                    The numbers in the word embedding and state are basically squashed into a new set of numbers which form a new state.
+                    The first word's numbers are combined with a special state, called the initial state, which represents the empty memory.
+                    The last state is a memory that has information about all the words in the sentence.
+                    This last state can be passed into another neural layer in order to output something about the sentence such as determine the sentence's acceptability (whether the sentence is grammatical or not).
+                </p>
+                <p style="text-align: justify;">
+                    The trick that makes recurrent neural networks special is that the parameters that process each word are exactly the same.
+                    This means that changing a parameter for one word will change the same parameter for every word.
+                    We call such parameters shared parameters, and they are a very powerful feature of neural networks.
+                    The fact that the parameters are forced to remain the same across word positions means that any sentence length can be processed with them; you just need to replicate the parameters for as many times as needed.
+                    See what happens when you move a slider in the neural network below.
+                </p>
+                <p style="text-align: justify;">
+                    Note how the parameters at the very end are not shared because they are used to process the last state and are not affected by the number of words in the sentence.
+                    Also note that biases have been left out to avoid cluttering.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 140px;" valign="top">
+                <div style="font-size: 20pt; text-align: right; position: relative; top: 10px;">
+                    Initial state:<br />
+                    0
+                </div>
+                <div style="font-size: 20pt; text-align: right; position: relative; top: 180px;">
+                    0
+                </div>
+            </td>
+            <td style="width: 800px;">
+                <div id="text_instance_canvas" class="canvas" style="width: 800px; height: 500px;"></div>
+            </td>
+            <td style="width: 145px;">
+                <div id="text_instance_box" class="box">dog the dog</div>
+                <div style="text-align: center; font-size: 20px;">Output: <span id="text_instance_output"><span></td>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <span style="font-size: 20pt; position: relative; left: 50px;">
+                    1
+                </span>
+                <span style="font-size: 14pt; position: relative; left: 60px;">
+                    (dog)
+                </span>
+                <span style="font-size: 20pt; position: relative; left: 70px;">
+                    0
+                </span>
+
+                <span style="font-size: 20pt; position: relative; left: 150px;">
+                    0
+                </span>
+                <span style="font-size: 14pt; position: relative; left: 170px;">
+                    (the)
+                </span>
+                <span style="font-size: 20pt; position: relative; left: 190px;">
+                    1
+                </span>
+
+                <span style="font-size: 20pt; position: relative; left: 270px;">
+                    1
+                </span>
+                <span style="font-size: 14pt; position: relative; left: 280px;">
+                    (dog)
+                </span>
+                <span style="font-size: 20pt; position: relative; left: 290px;">
+                    0
+                </span>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <table id="text_human">
+        <tr>
+            <td colspan="3">
+                <h2 style="text-align: center;">Optimisation: Human friendly version</h2>
+                <p style="text-align: justify;">
+                    Now see if you can correctly classify the below data set.
+                    Only one replication of the parameters is shown because that's all you need (they are replicated for every word in the sentence being classified) and a '...' is used to show this.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 140px;" valign="top">
+                <div style="font-size: 20pt; text-align: right; position: relative; top: 10px;">
+                    Initial state:<br />
+                    0
+                </div>
+                <div style="font-size: 20pt; text-align: right; position: relative; top: 180px;">
+                    0
+                </div>
+            </td>
+            <td style="width: 400px;">
+                <div id="text_human_canvas" class="canvas" style="width: 400px; height: 500px;"></div>
+            </td>
+            <td style="width: 300px;">
+                <table class="text">
+                    <tr>
+                        <td style="text-align: center;">make light</td>
+                        <td style="text-align: center;">make dark</td>
+                    </tr>
+                    <tr>
+                        <td><div id="text_human_box1" class="box">dog</div></td>
+                        <td><div id="text_human_box2" class="box">the</div></td>
+                    </tr>
+                    <tr>
+                        <td><div id="text_human_box3" class="box">the dog</div></td>
+                        <td><div id="text_human_box4" class="box">the the</div></td>
+                    </tr>
+                    <tr>
+                        <td><div id="text_human_box5" class="box">dog the dog</div></td>
+                        <td><div id="text_human_box6" class="box">the the the</div></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

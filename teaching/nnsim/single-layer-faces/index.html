@@ -24,13 +24,14 @@
                     A neural network is a kind of program that converts an input into an output.
                     It consists of a bunch of adjustable knobs called parameters which change how a set of inputs are converted into an output.
                     There are two types of parameters: weights and biases.
-                    Weights indicate how important each feature is to produce a bigger output whilst the bias adjusts the base output regardless of the input.
+                    Weights indicate how important each input's value is to produce a bigger output whilst the bias adjusts the base output regardless of the inputs.
                     Zero weights are ignored, positive weights contribute to making the output bigger, and negatives weights contribute to making the output smaller.
                 </p>
                 <p style="text-align: justify;">
-                    Adjust the weights (slanted sliders) and bias (verticle slider) below to make the neural network output the largest number you can (brightness of the border) for the features of the woman below.
+                    Adjust the weights (slanted sliders) and bias (verticle slider) below to make the neural network output the largest number you can (brightness of the border) for the features (inputs) of the woman below.
                     The input values are shown in parentheses next to their names.
                     An input value of zero, just like a weight of zero, does not contribute anything to the output.
+                    What's happening is that each input is being multiplied by its corresponding weight number and then the total of each multiplication is added to the bias number and that result is what the output is based on (large results bring the output closer to 1 and small results bring the output closer to 0).
                 </p>
             </td>
         </tr>

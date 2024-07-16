@@ -177,18 +177,37 @@ function createCircle(canvas, centreX, centreY, radius, colour) {
 
 class Parameter {
 
-    constructor(canvas, srcX, srcY, trgX, trgY, initValue, listener) {
+    canvas;
+    srcX;
+    srcY;
+    trgX;
+    trgY;
+    colour;
+    initValue;
+    listener;
+    listenerEnabled;
+    updateStrategy;
+
+    constructor(canvas, srcX, srcY, trgX, trgY, colour, initValue, listener) {
         this.canvas = canvas;
         this.srcX = srcX;
         this.srcY = srcY;
         this.trgX = trgX;
         this.trgY = trgY;
+        this.colour = colour;
         this.value = initValue;
         this.listener = listener;
+        this.listenerEnabled = true;
+        this.updateStrategy = function(value) {
+            this.value = value;
+            if (this.listenerEnabled) {
+                this.listener(value);
+            }
+        };
     }
 
     _createLineAndLabel() {
-        createLine(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, 10, 'black');
+        createLine(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, 10, this.colour);
         const setter = createLabel(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, 0, 20, this.value.toFixed(1), 'Courier New', '15px');
         return (value) => {
             setter(value.toFixed(1));
@@ -196,28 +215,41 @@ class Parameter {
     }
 
     createSliderConnection() {
-        let labelSetValue = this._createLineAndLabel()
+        let labelSetValue = this._createLineAndLabel();
+        let valueSetter = (value) => {};
 
-        createSlider(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, 0, 0, -10.0, 10.0, 0.1, this.value, (value)=>{
-            this.value = parseFloat(value);
-            labelSetValue(this.value);
-            this.listener();
-        });
+        this.updateStrategy = function(value) {
+            value = parseFloat(value);
+            this.value = value;
+            valueSetter(value);
+            labelSetValue(value);
+            if (this.listenerEnabled) {
+                this.listener(value);
+            }
+        };
+        valueSetter = createSlider(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, 0, 0, -10.0, 10.0, 0.1, this.value, this.setValue.bind(this));
     }
 
     createButtonsConnection() {
-        let labelSetValue = this._createLineAndLabel()
+        let labelSetValue = this._createLineAndLabel();
 
-        createButton(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, '−', -20, 0, ()=>{
-            this.value -= 0.2;
-            labelSetValue(this.value);
-            this.listener();
-        });
-        createButton(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, '+', 20, 0, ()=>{
-            this.value += 0.2;
-            labelSetValue(this.value);
-            this.listener();
-        });
+        this.updateStrategy = function(value) {
+            this.value = value;
+            labelSetValue(value);
+            if (this.listenerEnabled) {
+                this.listener(value);
+            }
+        };
+        createButton(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, '−', -20, 0, (value) => this.setValue(this.value - 0.2));
+        createButton(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, '+', 20, 0, (value) => this.setValue(this.value + 0.2));
+    }
+
+    setValue(value) {
+        this.updateStrategy(value);
+    }
+
+    setListenerStatus(enabled) {
+        this.listenerEnabled = enabled;
     }
 
 }
