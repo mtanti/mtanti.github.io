@@ -51,20 +51,45 @@ class NeuralNetFaces extends NeuralNet {
 
 }
 
-class NeuralNetFacesInstance extends NeuralNetFaces {
+class NeuralNetFacesInstance1 extends NeuralNetFaces {
 
     trainingItem;
     outputElem;
 
     constructor() {
         super(
-            document.getElementById('faces_instance_canvas'),
+            document.getElementById('faces_instance1_canvas'),
             true,
         );
 
-        this.trainingItem = new TrainingItem(document.getElementById('faces_instance_img'), [1, 1, 0, 0], 1);
+        this.trainingItem = new TrainingItem(document.getElementById('faces_instance1_img'), [0, 1, 0, 0], 1);
 
-        this.outputElem = document.getElementById('faces_instance_output');
+        this.outputElem = document.getElementById('faces_instance1_output');
+        this.update();
+    }
+
+    update() {
+        let output = this.getOutput(this.trainingItem)[0];
+        this.trainingItem.shadeElem(output);
+        this.outputElem.innerText = output.toFixed(3);
+    }
+
+}
+
+class NeuralNetFacesInstance2 extends NeuralNetFaces {
+
+    trainingItem;
+    outputElem;
+
+    constructor() {
+        super(
+            document.getElementById('faces_instance2_canvas'),
+            true,
+        );
+
+        this.trainingItem = new TrainingItem(document.getElementById('faces_instance2_img'), [0, 1, 1, 0], 1);
+
+        this.outputElem = document.getElementById('faces_instance2_output');
         this.update();
     }
 
@@ -144,7 +169,8 @@ class NeuralNetFacesComputer extends NeuralNetFaces {
 }
 
 function onloadFunction() {
-    new NeuralNetFacesInstance();
+    new NeuralNetFacesInstance1();
+    new NeuralNetFacesInstance2();
     new NeuralNetFacesHuman();
     new NeuralNetFacesComputer();
 }

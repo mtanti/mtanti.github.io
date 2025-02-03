@@ -28,28 +28,50 @@
                     Zero weights are ignored, positive weights contribute to making the output bigger, and negatives weights contribute to making the output smaller.
                 </p>
                 <p style="text-align: justify;">
-                    Adjust the weights (slanted sliders) and bias (verticle slider) below to make the neural network output the largest number you can (brightness of the border) for the features (inputs) of the woman below.
-                    The input values are shown in parentheses next to their names.
+                    Adjust the weights (slanted sliders) and bias (verticle slider) below to change the output of the two neural networks below (the output is visually represented by the brightness of the border).
+                    Each neural network is being fed different inputs, called features, according to what describes the person in the photo.
+                    The values of the features are shown in parentheses next to their names.
                     An input value of zero, just like a weight of zero, does not contribute anything to the output.
                     What's happening is that each input is being multiplied by its corresponding weight number and then the total of each multiplication is added to the bias number and that result is what the output is based on (large results bring the output closer to 1 and small results bring the output closer to 0).
+                </p>
+                <p>
+                    Adjust the sliders so that the woman gets a large output (bright border) and the man gets a small output (dark border).
+                    Can you make the the sliders exactly the same for both people while still obtaining the right output for both?
                 </p>
             </td>
         </tr>
         <tr>
             <td style="width: 160px;">
                 <table class="attributes">
-                    <tr><td style="text-align: right;">Glasses (1)</td></tr>
+                    <tr><td style="text-align: right;">Glasses (0)</td></tr>
                     <tr><td style="text-align: right;">Long hair (1)</td></tr>
                     <tr><td style="text-align: right;">Beard (0)</td></tr>
                     <tr><td style="text-align: right;">Necklace (0)</td></tr>
                 </table>
             </td>
             <td style="width: 400px;">
-                <div id="faces_instance_canvas" class="canvas"></div>
+                <div id="faces_instance1_canvas" class="canvas"></div>
             </td>
             <td style="width: 145px;">
-                <img id="faces_instance_img" src="../res/images/faces/3.jpg" />
-                <div style="text-align: center; font-size: 20px;">Output: <span id="faces_instance_output"><span></td>
+                <img id="faces_instance1_img" src="../res/images/faces/1.jpg" />
+                <div style="text-align: center; font-size: 20px;">Output: <span id="faces_instance1_output"><span></td>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 160px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">Glasses (0)</td></tr>
+                    <tr><td style="text-align: right;">Long hair (1)</td></tr>
+                    <tr><td style="text-align: right;">Beard (1)</td></tr>
+                    <tr><td style="text-align: right;">Necklace (0)</td></tr>
+                </table>
+            </td>
+            <td style="width: 400px;">
+                <div id="faces_instance2_canvas" class="canvas"></div>
+            </td>
+            <td style="width: 145px;">
+                <img id="faces_instance2_img" src="../res/images/faces/2.jpg" />
+                <div style="text-align: center; font-size: 20px;">Output: <span id="faces_instance2_output"><span></td>
             </td>
         </tr>
     </table>
