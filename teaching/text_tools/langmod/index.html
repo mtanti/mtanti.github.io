@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>N-gram language model v0.1.0</title>
+    <title>N-gram language model v0.2.0</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -44,7 +44,7 @@
         function textToIndexes($text, $useEndEdge) {
             const $tokens = $text.toLowerCase().split(/[^a-z]+/)
             const $indexes = [];
-            $indexes.push($tokenToIndex['EDGE']);
+            $indexes.push($edgeIndex);
             for (let $i = 0; $i < $tokens.length; $i++) {
                 const $token = $tokens[$i];
                 if ($token != '') {
@@ -52,12 +52,12 @@
                         $indexes.push($tokenToIndex[$token]);
                     }
                     else {
-                        $indexes.push($tokenToIndex['UNK']);
+                        $indexes.push($unkIndex);
                     }
                 }
             }
             if ($useEndEdge) {
-                $indexes.push($tokenToIndex['EDGE']);
+                $indexes.push($edgeIndex);
             }
             return $indexes;
         }
@@ -67,53 +67,80 @@
                 return;
             }
             
-            const $indexes = textToIndexes(document.getElementById('sent_prob_text').value, true);
-            if ($indexes.length <= 2) {
+            const $text = document.getElementById('sent_prob_text').value;
+            const $indexes = textToIndexes($text, true);
+            console.log('------')
+            console.log('Getting probability')
+            console.log($text);
+            console.log($indexes.map(($index) => $vocab[$index]));
+            
+            if ($indexes.length == 2) { // Empty text (just has the edge tokens).
                 return;
             }
             
+            const $smoothingCount = 1;
+            
+            // Get probability of first (true) token (following edge token).
+            // No need for back-off here because there will always be an edge token prefix.
+            let $target = $indexes[1];
+            let $prefix = $edgeIndex + '';
             let $totalFreq = 0;
-            for (let $token in $ngrams[2]['0']) {
-                $totalFreq += $ngrams[2]['0'][$token];
+            for (let $token in $ngrams[2][$prefix]) {
+                $totalFreq += $ngrams[2][$prefix][$token] + $smoothingCount;
             }
-            let $p = $ngrams[2]['0'][$indexes[1]]/$totalFreq; // Probability of first (true) token (following edge token).
+            let $correctedFreq = $smoothingCount;
+            if ($target in $ngrams[2][$prefix]) {
+                $correctedFreq += $ngrams[2][$prefix][$target];
+            }
+            let $targetProb = $correctedFreq/$totalFreq;
+            console.log($prefix.split(',').map(($index) => $vocab[parseInt($index)]) + ' -> ' + $vocab[$target] + ' = ' + $correctedFreq + '/' + $totalFreq);
+            
+            let $p = $targetProb;
             for (let $i = 2; $i < $indexes.length; $i++) {
                 let $target = $indexes[$i];
                 for (let $n = 3; $n >= 1; $n--) {
                     let $prefix = $indexes.slice($i-$n+1, $i).join(',');
-                    if ($prefix in $ngrams[$n] && $target in $ngrams[$n][$prefix]) {
-                        $totalFreq = 0;
-                        for (let $token in $ngrams[$n][$prefix]) {
-                            $totalFreq += $ngrams[$n][$prefix][$token];
-                        }
-                        let $targetProb = $ngrams[$n][$prefix][$target]/$totalFreq;
-                        $p *= $targetProb;
+                    if (!($prefix in $ngrams[$n])) {
+                        continue; // Back-off (will never back-off at $n == 1 because prefix '' always exists in $ngrams[1].
                     }
-                    else {
-                        continue;
+                    
+                    $totalFreq = 0;
+                    for (let $token in $ngrams[$n][$prefix]) {
+                        $totalFreq += $ngrams[$n][$prefix][$token] + $smoothingCount;
                     }
+                    $correctedFreq = $smoothingCount;
+                    if ($target in $ngrams[$n][$prefix]) {
+                        $correctedFreq += $ngrams[$n][$prefix][$target];
+                    }
+                    $targetProb = $correctedFreq/$totalFreq;
+                    console.log($prefix.split(',').map(($index) => $vocab[parseInt($index)]) + ' -> ' + $vocab[$target] + ' = ' + $correctedFreq + '/' + $totalFreq);
+                    
+                    $p *= $targetProb;
+                    
+                    break;
                 }
             }
             
-            document.getElementById('sent_prob_result').value = ($p*100).toFixed(100) + '%';
+            const $perc = $p*100;
+            const $dp = Math.round(-Math.log10($perc)) + 5;
+            document.getElementById('sent_prob_result').value = $perc.toFixed($dp) + '%';
         }
     </script>
 </head>
 <body onload="onload();">
 
-<h1>N-gram language model v0.1.0</h1>
+<h1>N-gram language model v0.2.0</h1>
 
 <div id="loading" style="font-size:20pt;">Loading...</div>
 <input type="button" value="Clear all" onclick="clearAll();" />
 
 <p>
-N-grams extracted from the <a href="https://www.nltk.org/nltk_data/">Brown corpus</a>.
-Unigrams, bigrams, and trigrams from all the alphabetical tokens in the Brown corpus sentences that occur at least 3 times within the corpus were extracted.
-Less frequent tokens are replaced with the unknown token.
+N-grams extracted from sentences in the <a href="https://www.nltk.org/nltk_data/">Brown corpus</a>.
+Uses 1,2,3-grams with back-off and +1 smoothing.
 </p>
 
 <h2>Sentence probability</h2>
-<p>Measure the probability of a sentence using a trigram backoff model.</p>
+<p>Measure the probability of a sentence.</p>
 <form>
     <textarea id="sent_prob_text" style="width:50%; height:100px;"></textarea><br />
     <input type="button" value="Get probability" onclick="getSentProb();" /><br /><br />
