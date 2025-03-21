@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>N-gram language model v0.1.0</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+        p, table, h3, code {
+            margin: 10px;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        td, th {
+            border: solid 1px black;
+            padding: 5px;
+        }
+        ol, ul {
+            list-style-position: outside;
+        }
+    </style>
+    <script>
+        var $loaded = false;
+        
+        function onload() {
+            const $script = document.createElement('script');
+            $script.onload = function() {
+                document.getElementById('loading').remove();
+                $loaded = true;
+            };
+            $script.src = 'data.js';
+            document.head.appendChild($script);
+        }
+        
+        function clearAll() {
+            document.getElementById('sent_prob_text').value = '';
+            document.getElementById('sent_prob_result').value = '';
+        }
+        
+        function textToIndexes($text, $useEndEdge) {
+            const $tokens = $text.toLowerCase().split(/[^a-z]+/)
+            const $indexes = [];
+            $indexes.push($tokenToIndex['EDGE']);
+            for (let $i = 0; $i < $tokens.length; $i++) {
+                const $token = $tokens[$i];
+                if ($token != '') {
+                    if ($token in $tokenToIndex) {
+                        $indexes.push($tokenToIndex[$token]);
+                    }
+                    else {
+                        $indexes.push($tokenToIndex['UNK']);
+                    }
+                }
+            }
+            if ($useEndEdge) {
+                $indexes.push($tokenToIndex['EDGE']);
+            }
+            return $indexes;
+        }
+        
+        function getSentProb() {
+            if (!$loaded) {
+                return;
+            }
+            
+            const $indexes = textToIndexes(document.getElementById('sent_prob_text').value, true);
+            if ($indexes.length <= 2) {
+                return;
+            }
+            
+            let $totalFreq = 0;
+            for (let $token in $ngrams[2]['0']) {
+                $totalFreq += $ngrams[2]['0'][$token];
+            }
+            let $p = $ngrams[2]['0'][$indexes[1]]/$totalFreq; // Probability of first (true) token (following edge token).
+            for (let $i = 2; $i < $indexes.length; $i++) {
+                let $target = $indexes[$i];
+                for (let $n = 3; $n >= 1; $n--) {
+                    let $prefix = $indexes.slice($i-$n+1, $i).join(',');
+                    if ($prefix in $ngrams[$n] && $target in $ngrams[$n][$prefix]) {
+                        $totalFreq = 0;
+                        for (let $token in $ngrams[$n][$prefix]) {
+                            $totalFreq += $ngrams[$n][$prefix][$token];
+                        }
+                        let $targetProb = $ngrams[$n][$prefix][$target]/$totalFreq;
+                        $p *= $targetProb;
+                    }
+                    else {
+                        continue;
+                    }
+                }
+            }
+            
+            document.getElementById('sent_prob_result').value = ($p*100).toFixed(100) + '%';
+        }
+    </script>
+</head>
+<body onload="onload();">
+
+<h1>N-gram language model v0.1.0</h1>
+
+<div id="loading" style="font-size:20pt;">Loading...</div>
+<input type="button" value="Clear all" onclick="clearAll();" />
+
+<p>
+N-grams extracted from the <a href="https://www.nltk.org/nltk_data/">Brown corpus</a>.
+Unigrams, bigrams, and trigrams from all the alphabetical tokens in the Brown corpus sentences that occur at least 3 times within the corpus were extracted.
+Less frequent tokens are replaced with the unknown token.
+</p>
+
+<h2>Sentence probability</h2>
+<p>Measure the probability of a sentence using a trigram backoff model.</p>
+<form>
+    <textarea id="sent_prob_text" style="width:50%; height:100px;"></textarea><br />
+    <input type="button" value="Get probability" onclick="getSentProb();" /><br /><br />
+    Probability: <input id="sent_prob_result" type="text" readonly="readonly" size="110" />
+</form>
+
+</body>
+</html>
