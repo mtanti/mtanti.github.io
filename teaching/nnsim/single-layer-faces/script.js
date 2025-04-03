@@ -165,8 +165,10 @@ class NeuralNetFacesComputer extends NeuralNetFaces {
         let totalError = 0.0;
         for (let i = 0; i < this.trainingSet.length; i++) {
             let output = this.getOutput(this.trainingSet[i])[0];
+            let error = Math.pow(output - this.trainingSet[i].target, 2);
             this.trainingSet[i].shadeElem(output);
-            totalError += Math.pow(output - this.trainingSet[i].target, 2)
+            this.trainingSet[i].elem.innerHTML = `Target: ${this.trainingSet[i].target}<br />Output: ${output.toFixed(3)}<br />Error: ${error.toFixed(3)}`;
+            totalError += error;
         }
         this.errorElem.innerText = (totalError/this.trainingSet.length).toFixed(3);
     }
