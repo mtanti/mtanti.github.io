@@ -2,6 +2,7 @@ class NeuralNetFaces extends NeuralNet {
 
     connW;
     connB;
+    params;
 
     constructor(canvas, useSliders) {
         super();
@@ -16,23 +17,25 @@ class NeuralNetFaces extends NeuralNet {
             [400, 200],
         ];
 
+        this.params = [];
+
         this.connW = [];
         for (let i = 0; i < coordOut.length; i++) {
             this.connW.push([]);
             for (let j = 0; j < coordInp.length; j++) {
-                this.connW[i].push(
-                    new Parameter(canvas, coordInp[j][0], coordInp[j][1], coordOut[i][0], coordOut[i][1], 'black', 0.0, this.update.bind(this))
-                );
-                if (useSliders) this.connW[i][j].createSliderConnection(); else this.connW[i][j].createButtonsConnection();
+                let param = new Parameter(canvas, coordInp[j][0], coordInp[j][1], coordOut[i][0], coordOut[i][1], 'black', 0.0, this.update.bind(this));
+                this.connW[i].push(param);
+                this.params.push(param);
+                if (useSliders) param.createSliderConnection(); else this.connW[i][j].createButtonsConnection();
             }
             createCircle(canvas, coordOut[i][0], coordOut[i][1], NeuralNet.nodeRadius, 'black');
         }
 
         this.connB = [];
         for (let j = 0; j < coordOut.length; j++) {
-            this.connB.push(
-                new Parameter(canvas, coordOut[j][0], coordOut[j][1], coordOut[j][0], coordOut[j][1] + 150, 'black', 0.0, this.update.bind(this))
-            );
+            let param = new Parameter(canvas, coordOut[j][0], coordOut[j][1], coordOut[j][0], coordOut[j][1] + 150, 'black', 0.0, this.update.bind(this));
+            this.connB.push(param);
+            this.params.push(param);
             if (useSliders) this.connB[j].createSliderConnection(); else this.connB[j].createButtonsConnection();
         }
     }
@@ -173,11 +176,44 @@ class NeuralNetFacesComputer extends NeuralNetFaces {
         this.errorElem.innerText = (totalError/this.trainingSet.length).toFixed(3);
     }
 
+    automate() {
+        let bestNewValues = [];
+        for (let i = 0; i < this.params.length; i++) {
+            let currValue = this.params[i].value;
+            let bestNewValue = null;
+            let bestAverageError = null;
+            for (let newValue of [currValue, currValue - 0.2, currValue + 0.2]) {
+                this.params[i].setValue(newValue);
+                let totalError = 0.0;
+                for (let j = 0; j < this.trainingSet.length; j++) {
+                    let output = this.getOutput(this.trainingSet[j])[0];
+                    let error = Math.pow(output - this.trainingSet[j].target, 2);
+                    totalError += error;
+                }
+                let averageError = totalError/this.trainingSet.length;
+                this.params[i].setValue(currValue);
+
+                if (bestAverageError === null || averageError < bestAverageError) {
+                    bestNewValue = newValue;
+                    bestAverageError = averageError;
+                }
+            }
+            bestNewValues.push(bestNewValue);
+        }
+
+        for (let i = 0; i < this.params.length; i++) {
+            this.params[i].setValue(bestNewValues[i]);
+        }
+    }
+
 }
 
 function onloadFunction() {
     new NeuralNetFacesInstance1();
     new NeuralNetFacesInstance2();
     new NeuralNetFacesHuman();
-    new NeuralNetFacesComputer();
+    const nn = new NeuralNetFacesComputer();
+    document.getElementById('automate').onclick = (() => {
+        nn.automate();
+    });
 }

@@ -12,7 +12,7 @@
 <body onload="onloadFunction();">
 
     <h1>Neural network simulator</h1>
-    <p>All images were taken from the <a href="https://www.kaggle.com/datasets/jessicali9530/lfw-dataset/">Labelled Faces in the Wild</a> data set.</p>
+    <p style="text-align: justify;">All images were taken from the <a href="https://www.kaggle.com/datasets/jessicali9530/lfw-dataset/">Labelled Faces in the Wild</a> data set.</p>
 
     <hr />
 
@@ -34,7 +34,7 @@
                     An input value of zero, just like a weight of zero, does not contribute anything to the output.
                     What's happening is that each input is being multiplied by its corresponding weight number and then the total of each multiplication is added to the bias number and that result is what the output is based on (large results bring the output closer to 1 and small results bring the output closer to 0).
                 </p>
-                <p>
+                <p style="text-align: justify;">
                     Adjust the sliders so that the woman gets a large output (bright border) and the man gets a small output (dark border).
                     Can you make the the sliders exactly the same for both people while still obtaining the right output for both?
                 </p>
@@ -176,9 +176,23 @@
                 <p style="text-align: justify;">
                     This is the same thing as above except that this is closer to how a computer would do it.
                     The parameters can only be changed by a small amount at a time and you are only guided by a numeric error value.
-                    The error is a number saying how wrong the outputs of each train set item are.
+                    The error is a number measuring how wrong the output of each train set item is.
                     The further the output is from the target, the greater the error will be.
-                    You now need to adjust the parameters in such a way that the average error value is minimised (brought close to zero).
+                    This error is the only thing guiding a computer when training a neural network.
+                    To make things simpler, the average of all the errors is used as a guide and the parameters need to be adjusted in such a way that this average error is minimised (brought as close to zero as possible).
+                </p>
+                <p style="text-align: justify;">
+                    On a computer, the best automatic process of optimisation is called the gradient descent algorithm.
+                    In very simple terms, the process involves going over each parameter and checking how the average error changes when the parameter is slightly increased and decreased.
+                    If increasing the parameter's value decreases the average error, a note is made that the parameter needs to be increased; if decreasing the parameter's value is what decreases the average error, a note is made that the parameter needs to be decreased; if neither change decreases the error, a note is made that the parameter shouldn't be changed.
+                    The parameter needs to then be restored to its original value before checking the next parameter.
+                    Once all the parameters have been checked, they are then all changed at once.
+                    Slightly changing all parameters at once is better than fully changing one parameter at a time, a process called coordinate descent, as it works on more complex problems that coordinate descent fails in.
+                    A single step of parameter changes in gradient descent is called an epoch.
+                </p>
+                <p style="text-align: justify;">
+                    Try performing an epoch yourself by using the buttons on the parameters and then use the big button below that automatically performs an epoch for you.
+                    You need many epochs to fully train a neural network.
                 </p>
             </td>
         </tr>
@@ -215,6 +229,9 @@
                     </tr>
                 </table>
             </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align: center;"><input id="automate" type="button" value="Automatic epoch" style="font-size: 20pt;" /></td>
         </tr>
     </table>
 
