@@ -118,6 +118,11 @@ class NeuralNetFacesHuman extends NeuralNetFaces {
             new TrainingItem(document.getElementById('faces_human_img4'), [0, 0, 0, 0], 0),
             new TrainingItem(document.getElementById('faces_human_img5'), [0, 0, 0, 1], 1),
             new TrainingItem(document.getElementById('faces_human_img6'), [0, 0, 0, 0], 0),
+
+            new TrainingItem(document.getElementById('faces_human_img7'),  [0, 1, 0, 1], 0),
+            new TrainingItem(document.getElementById('faces_human_img8'),  [1, 0, 0, 0], 0),
+            new TrainingItem(document.getElementById('faces_human_img9'),  [0, 1, 0, 0], 0),
+            new TrainingItem(document.getElementById('faces_human_img10'), [0, 1, 1, 0], 0),
         ];
 
         this.update();
