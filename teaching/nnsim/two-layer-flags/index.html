@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Two-layer neural network simulator</title>
+    <script src="../res/scripts/library.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="../res/styles/style.css" />
+</head>
+<body onload="onloadFunction();">
+
+    <h1>Two-layer neural network simulator</h1>
+    <p>All images were taken from <a href="https://commons.wikimedia.org/">Wikimedia Commons</a>.</p>
+
+    <hr />
+
+    <table id="flags_onelayer">
+        <tr>
+            <td colspan="3">
+                <h2 style="text-align: center;">One layer is not enough</h2>
+                <p style="text-align: justify;">
+                    The kind of neural network shown previously has limitations on what can be learned because, no matter how the parameters are adjusted, they can only perform very simple operations.
+                    This is enough for certain tasks, but not for most tasks.
+                    The train set below is an example of a task that cannot be solved with a single layer.
+                </p>
+                <p style="text-align: justify;">
+                    The below flags are either of a European country or of an African country.
+                    You are to make the neural network correctly output if the flag belongs to Europe based only on whether the flag contains the colours red and yellow.
+                    See if you can manage.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 140px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">Has red<br />(0 or 1)</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td style="text-align: right;">Has yellow<br />(0 or 1)</td></tr>
+                </table>
+            </td>
+            <td style="width: 400px;">
+                <div id="flags_onelayer_canvas" class="canvas"></div>
+            </td>
+            <td style="width: 300px;">
+                <table class="flags">
+                    <tr>
+                        <td style="text-align: center;">make light</td>
+                        <td style="text-align: center;">make dark</td>
+                    </tr>
+                    <tr>
+                        <td><img id="flags_onelayer_img1" src="../res/images/flags/france.png" /></td>
+                        <td><img id="flags_onelayer_img2" src="../res/images/flags/guinea.png" /></td>
+                    </tr>
+                    <tr>
+                        <td><img id="flags_onelayer_img3" src="../res/images/flags/ukraine.png" /></td>
+                        <td><img id="flags_onelayer_img4" src="../res/images/flags/nigeria.png" /></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <table id="flags_instance">
+        <tr>
+            <td colspan="3">
+                <h2 style="text-align: center;">The two-layer neural network</h2>
+                <p style="text-align: justify;">
+                    It turns out that if the output of a neural unit (the circle) is used as an input to another neural unit, and a network of such neural units is created (hence neural 'network'), a much more powerful neural network is created.
+                    The more neural units, the more complex the operations that can be learned.
+                    The neural units are usually organised into layers, where a layer of units all receive the same inputs and none of them receive inputs from each other.
+                </p>
+                <p style="text-align: justify;">
+                    Note how changing the parameters of the first layer (the parameters closest to the inputs) does not affect the final output at all if the parameters of the second layer are left as zero.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 160px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">Has red (1)</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td style="text-align: right;">Has yellow (0)</td></tr>
+                </table>
+            </td>
+            <td style="width: 400px;">
+                <div id="flags_instance_canvas" class="canvas longer-canvas"></div>
+            </td>
+            <td style="width: 145px;">
+                <img id="flags_instance_img" src="../res/images/flags/france.png" />
+                <div style="text-align: center; font-size: 20px;">Output: <span id="flags_instance_output"><span></td>
+            </td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <table id="flags_human">
+        <tr>
+            <td colspan="3">
+                <h2 style="text-align: center;">Optimisation: Human friendly version</h2>
+                <p style="text-align: justify;">
+                    Try to optimise this neural network to output if the flag belongs to Europe.
+                    Note how difficult it is to do manually compared to the single layer neural network.
+                    This is because there are now complex interactions happening between neural units and you can't just maximise or minimise parameters.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 140px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">Has red<br />(0 or 1)</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td style="text-align: right;">Has yellow<br />(0 or 1)</td></tr>
+                </table>
+            </td>
+            <td style="width: 400px;">
+                <div id="flags_human_canvas" class="canvas longer-canvas"></div>
+            </td>
+            <td style="width: 300px;">
+                <table class="flags">
+                    <tr>
+                        <td style="text-align: center;">make light</td>
+                        <td style="text-align: center;">make dark</td>
+                    </tr>
+                    <tr>
+                        <td><img id="flags_human_img1" src="../res/images/flags/france.png" /></td>
+                        <td><img id="flags_human_img2" src="../res/images/flags/guinea.png" /></td>
+                    </tr>
+                    <tr>
+                        <td><img id="flags_human_img3" src="../res/images/flags/ukraine.png" /></td>
+                        <td><img id="flags_human_img4" src="../res/images/flags/nigeria.png" /></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <table id="flags_computer">
+        <tr>
+            <td colspan="3" style="text-align: center;">
+                <h2>Optimisation: Computer friendly version</h2>
+                <p style="text-align: justify;">
+                    It turns out that it's quite complex to optimise a multi-layer neural network, even for a computer.
+                    In fact, you need to do tricks like setting the parameters to random numbers before you start optimising (initialisation) because having parameters all be zeros tends to get you no useful error feedback when changing parameters.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="text-align: center; font-size: 20px;">Average error: <span id="flags_computer_error"><span></td>
+        </tr>
+        <tr>
+            <td style="width: 170px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">Input 1<br />(0 or 1)</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td>&nbsp;</td></tr>
+                    <tr><td style="text-align: right;">Input 2<br />(0 or 1)</td></tr>
+                </table>
+            </td>
+            <td style="width: 510px;">
+                <div id="flags_computer_canvas" class="canvas longer-canvas"></div>
+            </td>
+            <td style="width: 305px;">
+                <table class="flags">
+                    <tr>
+                        <td><div id="flags_computer_img1" class="box" style="font-size:14pt;"></div></td>
+                        <td><div id="flags_computer_img2" class="box" style="font-size:14pt;"></div></td>
+                    </tr>
+                    <tr>
+                        <td><div id="flags_computer_img3" class="box" style="font-size:14pt;"></div></td>
+                        <td><div id="flags_computer_img4" class="box" style="font-size:14pt;"></div></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td style="text-align: center;">
+                <input id="initialise" type="button" value="Initialise" style="font-size: 20pt;" />
+                <input id="automate" type="button" value="Automatic epoch" style="font-size: 20pt;" />
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <p><a href="../index.html">Return to main page</a></p>
+
+</body>
+</html>
