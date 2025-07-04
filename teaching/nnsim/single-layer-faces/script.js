@@ -164,36 +164,39 @@ class NeuralNetFacesComputer extends NeuralNetFaces {
         this.update();
     }
 
-    update() {
+    getAverageError() {
         let totalError = 0.0;
+        for (let j = 0; j < this.trainingSet.length; j++) {
+            let output = this.getOutput(this.trainingSet[j])[0];
+            let error = Math.pow(output - this.trainingSet[j].target, 2);
+            totalError += error;
+        }
+        return totalError/this.trainingSet.length;
+    }
+
+    update() {
         for (let i = 0; i < this.trainingSet.length; i++) {
             let output = this.getOutput(this.trainingSet[i])[0];
             let error = Math.pow(output - this.trainingSet[i].target, 2);
             this.trainingSet[i].shadeElem(output);
             this.trainingSet[i].elem.innerHTML = `Target: ${this.trainingSet[i].target}<br />Output: ${output.toFixed(3)}<br />Error: ${error.toFixed(3)}`;
-            totalError += error;
         }
-        this.errorElem.innerText = (totalError/this.trainingSet.length).toFixed(3);
+        this.errorElem.innerText = this.getAverageError().toFixed(3);
     }
 
     automate() {
         let bestNewValues = [];
+        let currAverageError = this.getAverageError();
         for (let i = 0; i < this.params.length; i++) {
             let currValue = this.params[i].value;
-            let bestNewValue = null;
-            let bestAverageError = null;
-            for (let newValue of [currValue, currValue - 0.2, currValue + 0.2]) {
+            let bestNewValue = currValue;
+            let bestAverageError = currAverageError;
+            for (let newValue of [currValue - 0.2, currValue + 0.2]) {
                 this.params[i].setValue(newValue);
-                let totalError = 0.0;
-                for (let j = 0; j < this.trainingSet.length; j++) {
-                    let output = this.getOutput(this.trainingSet[j])[0];
-                    let error = Math.pow(output - this.trainingSet[j].target, 2);
-                    totalError += error;
-                }
-                let averageError = totalError/this.trainingSet.length;
+                let averageError = this.getAverageError();
                 this.params[i].setValue(currValue);
 
-                if (bestAverageError === null || averageError < bestAverageError) {
+                if (averageError < bestAverageError) {
                     bestNewValue = newValue;
                     bestAverageError = averageError;
                 }
