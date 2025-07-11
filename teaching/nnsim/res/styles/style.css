@@ -23,7 +23,7 @@ table.attributes {
     font-size: 20pt;
 }
 
-table.faces, table.flags {
+table.faces, table.flags, table.text {
     border-width: 0px;
 }
 
@@ -37,6 +37,10 @@ div.canvas {
 
 div.longer-canvas {
     height: 450px;
+}
+
+div.compressed-canvas {
+    width: 370px;
 }
 
 body {

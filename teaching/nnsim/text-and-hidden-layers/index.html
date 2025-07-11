@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Text and hidden layers</title>
+    <link rel="stylesheet" href="../res/styles/style.css" />
+    <script src="../res/scripts/library.js"></script>
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body onload="onloadFunction();">
+
+    <h1>Text and hidden layers</h1>
+
+    <hr />
+
+    <table id="text_instance">
+        <tr>
+            <td colspan="3">
+                <h2 style="text-align: center;">Representing text</h2>
+                <p style="text-align: justify;">
+                    How do neural networks accept text as an input?
+                    In previous tasks shown, the neural networks accepted a set of ones and zeros as inputs.
+                    The same thing can happen with text, except that we need to use numbers for each word.
+                </p>
+                <p style="text-align: justify;">
+                    The simplest way to do this is to use one-hot vectors, that is, a list of zeros with a single 1 somewhere in the list.
+                    You need to have a fix list of possible words that the neural network can accept, called the vocabulary, and the position of the 1 in the one-hot vector tells you which word from this vocabulary is used.
+                    In this demonstration, we're assuming a simple vocabulary of 4 words: 'it's', 'not', 'good', and 'bad', which allows us to make sentences like 'it's good' and 'not bad'.
+                    Given that our vocabulary has a size of 4, we need one-hot vectors consisting of 4 numbers.
+                    We're using '1 0 0 0' to represent 'it's', '0 1 0 0' to represent 'not', '0 0 1 0' to represent 'good', and '0 0 0 1' to represent 'bad'.
+                </p>
+                <p style="text-align: justify;">
+                    We're going to train a neural network to decide if a sentence is positive or negative, namely 'it's good' and 'not bad' are positive and 'it's bad' and 'not good' are negative.
+                    This is called sentiment analysis, which is useful for guaging what people are commenting about a product or person.
+                    Having an input consisting of 2 words with 4 numbers used to represent each word gives us 8 numbers as input, as can be seen below.
+                    Note that this neural network only accepts exactly two words as input because the number of inputs cannot change.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 170px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">it's<sub>1</sub> (1)</td></tr>
+                    <tr><td style="text-align: right;">it's<sub>2</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">it's<sub>3</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">it's<sub>4</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>1</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>2</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>3</sub> (1)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>4</sub> (0)</td></tr>
+                </table>
+            </td>
+            <td style="width: 370px;">
+                <div id="text_instance_canvas" class="canvas longer-canvas compressed-canvas"></div>
+            </td>
+            <td style="width: 145px;">
+                <div id="text_instance_box" class="box">it's good</div>
+                <div style="text-align: center; font-size: 20px;">Output: <span id="text_instance_output"><span></td>
+            </td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <table id="text_computer">
+        <tr>
+            <td colspan="3" style="text-align: center;">
+                <h2>Optimisation: Computer friendly version</h2>
+                <p style="text-align: justify;">
+                    At this point we're beginning to have too many sliders to work with manually.
+                    So we'll just skip to the computer friendly version and focus on the automatic epoch button.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="text-align: center; font-size: 20px;">Average error: <span id="text_computer_error"><span></td>
+        </tr>
+        <tr>
+            <td style="width: 170px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">word 1<sub>1</sub></td></tr>
+                    <tr><td style="text-align: right;">word 1<sub>2</sub></td></tr>
+                    <tr><td style="text-align: right;">word 1<sub>3</sub></td></tr>
+                    <tr><td style="text-align: right;">word 1<sub>4</sub></td></tr>
+                    <tr><td style="text-align: right;">word 2<sub>1</sub></td></tr>
+                    <tr><td style="text-align: right;">word 2<sub>2</sub></td></tr>
+                    <tr><td style="text-align: right;">word 2<sub>3</sub></td></tr>
+                    <tr><td style="text-align: right;">word 2<sub>4</sub></td></tr>
+                </table>
+            </td>
+            <td style="width: 370px;">
+                <div id="text_computer_canvas" class="canvas longer-canvas compressed-canvas"></div>
+            </td>
+            <td style="width: 300px;">
+                <table class="text">
+                    <tr>
+                        <td><div id="text_computer_box1" class="box" style="font-size:14pt;"></div></td>
+                        <td><div id="text_computer_box2" class="box" style="font-size:14pt;"></div></td>
+                    </tr>
+                    <tr>
+                        <td><div id="text_computer_box3" class="box" style="font-size:14pt;"></div></td>
+                        <td><div id="text_computer_box4" class="box" style="font-size:14pt;"></div></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td style="text-align: center;">
+                <input id="initialise" type="button" value="Initialise" style="font-size: 20pt;" />
+                <input id="automate" type="button" value="Automatic epoch" style="font-size: 20pt;" />
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <table id="text_hidden">
+        <tr>
+            <td colspan="4">
+                <h2 style="text-align: center;">The hidden layer</h2>
+                <p style="text-align: justify;">
+                    Up to now we've only cared about the numbers produced by the neural unit at the end of the neural network, but what about the two neural units in the middle?
+                    Those are called hidden neural units, and the column is called a hidden layer.
+                    The reason why they are hidden is because we don't typically see their outputs, and we don't typically control what it should be either, but that makes them even more interesting!
+                </p>
+                <p style="text-align: justify;">
+                    For a long time, neural networks did not have this hidden layer and consisted of only one neural unit, which, as we saw before, limited their usability.
+                    To make these simple networks work anyway, the inputs in the training set were modified to be easier to work with, a process called feature engineering.
+                    This required doing things like checking for keywords, relationships between words (is there a 'not' before the word?), and other complicated stuff which made it harder to get the neural network to work.
+                    But with hidden layers, we can just feed the neural network the raw input without having to interpret it for the neural network.
+                    All we have to do is represent the input as numbers and we're done, because the hidden neural units will interpret the input for us.
+                </p>
+                <p style="text-align: justify;">
+                    We can see what the hidden neural units are doing but seeing what number is coming out of them, as shown below.
+                    Note that the neural networks below are just displaying the number coming out of each neural unit in the previous neural network for each of the 4 input sentences.
+                    Note also that optimising the previous neural network will update the numbers below.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 130px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">it's<sub>1</sub> (1)</td></tr>
+                    <tr><td style="text-align: right;">it's<sub>2</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">it's<sub>3</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">it's<sub>4</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>1</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>2</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>3</sub> (1)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>4</sub> (0)</td></tr>
+                </table>
+            </td>
+            <td style="width: 370px;">
+                <div id="text_hidden1_canvas" class="canvas longer-canvas compressed-canvas"></div>
+            </td>
+            <td style="width: 130px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">it's<sub>1</sub> (1)</td></tr>
+                    <tr><td style="text-align: right;">it's<sub>2</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">it's<sub>3</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">it's<sub>4</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">bad<sub>1</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">bad<sub>2</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">bad<sub>3</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">bad<sub>4</sub> (1)</td></tr>
+                </table>
+            </td>
+            <td style="width: 370px;">
+                <div id="text_hidden2_canvas" class="canvas longer-canvas compressed-canvas"></div>
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 130px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">not<sub>1</sub> (1)</td></tr>
+                    <tr><td style="text-align: right;">not<sub>2</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">not<sub>3</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">not<sub>4</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">bad<sub>1</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">bad<sub>2</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">bad<sub>3</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">bad<sub>4</sub> (1)</td></tr>
+                </table>
+            </td>
+            <td style="width: 370px;">
+                <div id="text_hidden3_canvas" class="canvas longer-canvas compressed-canvas"></div>
+            </td>
+            <td style="width: 130px;">
+                <table class="attributes">
+                    <tr><td style="text-align: right;">not<sub>1</sub> (1)</td></tr>
+                    <tr><td style="text-align: right;">not<sub>2</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">not<sub>3</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">not<sub>4</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>1</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>2</sub> (0)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>3</sub> (1)</td></tr>
+                    <tr><td style="text-align: right;">good<sub>4</sub> (0)</td></tr>
+                </table>
+            </td>
+            <td style="width: 370px;">
+                <div id="text_hidden4_canvas" class="canvas longer-canvas compressed-canvas"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <p style="text-align: justify;">
+                    To make it easier to see what's going on, we'll plot the hidden layer numbers as the scatter plot below.
+                    Each point represents the hidden layer numbers produced by a particular text, and the numbers are represented by the x and y coordinates of the point.
+                    Observe how the points tend to organise themselves in such a way that you can draw a straight line separating the positive from the negative sentences.
+                    You probably won't be able to understand what each number means by itself, which is normal.
+                    Neural networks have no obligation to interpret the inputs in a way that makes sense to you, only in a way that works.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <canvas id="scatter" style="width: 500px; height: 500px; margin-left: auto; margin-right: auto;"></canvas>
+            </td>
+        </tr>
+    </table>
+
+    <hr />
+
+    <p><a href="../index.html">Return to main page</a></p>
+
+</body>
+</html>

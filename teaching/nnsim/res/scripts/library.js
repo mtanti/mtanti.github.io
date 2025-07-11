@@ -183,7 +183,7 @@ class Parameter {
     trgX;
     trgY;
     colour;
-    initValue;
+    value;
     listener;
     listenerEnabled;
     updateStrategy;
@@ -206,11 +206,30 @@ class Parameter {
         };
     }
 
+    createlabellessConnection() {
+        createLine(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, 10, this.colour);
+    }
+
     _createLineAndLabel() {
         createLine(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, 10, this.colour);
         const setter = createLabel(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, 0, 20, this.value.toFixed(1), 'Courier New', '15px');
         return (value) => {
             setter(value.toFixed(1));
+        };
+    }
+
+    createInteractionlessConnection() {
+        let labelSetValue = this._createLineAndLabel();
+        let valueSetter = (value) => {};
+
+        this.updateStrategy = function(value) {
+            value = parseFloat(value);
+            this.value = value;
+            valueSetter(value);
+            labelSetValue(value);
+            if (this.listenerEnabled) {
+                this.listener(value);
+            }
         };
     }
 
@@ -244,6 +263,10 @@ class Parameter {
         createButton(this.canvas, this.srcX, this.srcY, this.trgX, this.trgY, '+', 20, 0, (value) => this.setValue(this.value + 0.2));
     }
 
+    getValue() {
+        return this.value;
+    }
+
     setValue(value) {
         this.updateStrategy(value);
     }
@@ -263,8 +286,10 @@ class TrainingItem {
     }
 
     shadeElem(value) {
-        const shade = Math.round(255*value);
-        this.elem.style.borderColor = "rgb("+shade+","+shade+","+shade+")";
+        if (this.elem !== null) {
+            const shade = Math.round(255*value);
+            this.elem.style.borderColor = "rgb("+shade+","+shade+","+shade+")";
+        }
     }
 
 }
