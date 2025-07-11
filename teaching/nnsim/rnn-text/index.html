@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Recurrent neural network simulator</title>
+    <link rel="stylesheet" href="../res/styles/style.css" />
     <script src="../res/scripts/library.js"></script>
     <script src="script.js"></script>
-    <link rel="stylesheet" href="../res/styles/style.css" />
 </head>
 <body onload="onloadFunction();">
 
@@ -21,16 +21,14 @@
                 <h2 style="text-align: center;">The neural network</h2>
                 <p style="text-align: justify;">
                     A recurrent neural network is a neural network that can handle variable length sequence inputs, such as sentences.
-                    The words of the sentences need to be represented as a set of numbers somehow, and the simplest way to do that is to use one-hot vectors, that is, a list of zeros with a single 1 somewhere in the list.
-                    The position of the 1 tells you which word is used.
                     In this demonstration, we're assuming that a sentence can only consist of two possible words: 'the' and 'dog', for example 'dog the dog'.
                     We're using '0 1' to represent 'the' and '1 0' to represent 'dog'.
                 </p>
                 <p style="text-align: justify;">
-                    A recurrent neural network takes these word numbers, called word embeddings, and scans them from the first word to the last, each time keeping a memory of what words have been observed up to that point.
+                    A recurrent neural network takes these word numbers and scans them from the first word to the last, each time keeping a memory of what words have been observed up to that point.
                     This memory is a fixed set of numbers called a state, and the amount of numbers in the state does not change, no matter how long the sentence is.
                     As the words are scanned one by one, a neural network layer combines the current word's numbers with the previous state numbers in order to create a new state.
-                    The numbers in the word embedding and state are basically squashed into a new set of numbers which form a new state.
+                    The numbers in the word and state are basically squashed into a new set of numbers which form a new state.
                     The first word's numbers are combined with a special state, called the initial state, which represents the empty memory.
                     The last state is a memory that has information about all the words in the sentence.
                     This last state can be passed into another neural layer in order to output something about the sentence such as determine the sentence's acceptability (whether the sentence is grammatical or not).
@@ -110,7 +108,7 @@
             <td colspan="3">
                 <h2 style="text-align: center;">Optimisation: Human friendly version</h2>
                 <p style="text-align: justify;">
-                    Now see if you can correctly classify the below data set.
+                    Now see if you can correctly classify the below training set.
                     Only one replication of the parameters is shown because that's all you need (they are replicated for every word in the sentence being classified) and a '...' is used to show this.
                 </p>
             </td>
